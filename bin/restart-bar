@@ -1,0 +1,5 @@
+#!bin/bash
+##Program to restart polybar
+if pgrep -af polybar > /dev/null
+	pkill -USR1 polybar && polybar --config=$HOME/.config/berry/polybar/config
+fi

@@ -1,0 +1,99 @@
+#!/bin/bash
+xrdb -merge -I$HOME ~/.Xresources
+[[ -f ~/.Xdefaults ]] && xrdb -merge ~/.Xdefaults
+
+[[ -f ~/.zshenv ]] && source ~/.zshenv
+[[ -f ~/.zprofile ]] && source ~/.zprofile
+
+export MICRO_TRUECOLOR=1
+
+setxkbmap -option "caps:swapescape" &
+
+if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+    eval "$(dbus-launch --sh-syntax --exit-with-session)"
+fi
+
+export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
+if [ -x /usr/bin/xdg-user-dirs-update ]; then
+   /usr/bin/xdg-user-dirs-update
+fi
+
+export MICRO_TRUECOLOR=1
+
+# Kill already running process
+_ps=(sxhkd polybar picom dunst ksuperkey mpd xfce-polkit xfce4-power-manager tint2)
+for _prs in "${_ps[@]}"; do
+	if [[ `pidof ${_prs}` ]]; then
+		killall -9 ${_prs}
+	fi
+done
+
+nvidia-settings -l
+
+###Start sxhkd
+sxhkd -c $HOME/.config/sxhkd/common-keys &
+sxhkd -c $HOME/.config/sxhkd/sxhkdrc-berry &
+
+# Set decoration geometry
+berryc border_width       1
+berryc inner_border_width 3
+berryc title_height       15
+berryc edge_gap 60 10 10 10
+
+# Set decoration colors
+berryc focus_color      	89b4fa
+berryc unfocus_color       	45475a
+berryc inner_focus_color   	b4befe
+berryc inner_unfocus_color 	313244
+berryc text_focus_color   	181825
+berryc text_unfocus_color  	cdd6f4
+
+# Other options
+berryc smart_place 			"true"
+berryc draw_text   			"true"
+berryc edge_lock   			"true"
+berryc set_font    			"Iosevka-12"
+berryc edge_lock 			"true"
+berryc json_status 			"true"
+berryc decorate_new 		"true"
+berryc pointer_interval 	0
+berryc manage 				Dialog|Toolbar|Menu|Splash|Utility 
+
+berryc move_mask 			"mod1"
+berryc move_button 			1
+berryc resize_mask 			"mod4"
+berryc resize_button 		3
+
+# Lauch notification daemon
+~/bin/berrydunst.sh
+
+# Lauch compositor
+~/bin/berrycomp.sh
+
+###load bar and wallpaper
+~/bin/berrybar.sh
+## UI Appearance - Open Last Theme (wallpaper, panel, notify-daemon)
+#current="$(cat ~/.config/openbox/visual-mode/current)"
+#bash ~/.config/openbox/visual-mode/$current/ui
+
+#Some ways to set your wallpaper besides variety or nitrogen
+feh --bg-fill ~/wallpapers//mandelbrot/mandelbrot_full_lavender.png &
+# -R restores the last colorscheme that was in use and -o runs the script to set 2bwm theme
+#wal -R -o wal-set &
+
+###Start daemons and programs
+calcurse --daemon &
+skippy-xd --start-daemon &
+nm-applet &
+xfce4-power-manager &
+numlockx on &
+#blueberry-tray &
+clipit &
+volumeicon &
+#urxvtd &
+picom -b &
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+#/usr/lib/xfce4/notifyd/xfce4-notifyd &
+xfsettingsd &
+sleep 1; thunar --daemon &
+exec mpd &

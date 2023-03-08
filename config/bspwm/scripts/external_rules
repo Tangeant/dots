@@ -1,0 +1,30 @@
+#!/bin/bash
+wid=$1
+class=$2
+instance=$3
+consequences=$4
+
+echo $@ >> ~/.rules_cmd.log
+
+case "$class" in
+    Alacritty|Kitty)
+		eval "$consequences"
+		[ "$state" ] || echo "state=pseudo_tiled rectangle=1200x900+0+0"
+		;;
+	Navigator)
+		eval "$consequences"
+		[ "$state" ] || echo "private=on desktop=^2 follow=on"
+		;;
+	Geany)
+		eval "$consequences"
+		[ "$state" ] || echo "state=pseudo_tiled desktop=^6 follow=on rectangle=1200x1350+0+0"
+		;;
+	Thunar)
+		eval "$consequences"
+		[ "$state" ] || echo "state=pseudo_tiled desktop=^3 follow=on rectangle=1200x1350+0+0"
+		;;
+	dropdown)
+		eval "$consequences"
+		[ "$state" ] || echo "state=pseudo_tiled sticky=on private=on rectangle=1200x900+0+0"
+		;;
+esac

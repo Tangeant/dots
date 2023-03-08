@@ -1,0 +1,94 @@
+#!/bin/bash
+
+#  _
+# | |_ ___ ___ _ _ _ _____
+# | . |_ -| . | | | |     |
+# |___|___|  _|_____|_|_|_|
+#         |_|
+
+###Source the bspwm theme
+source $HOME/.config/bspwm/theme
+
+###Truncate a couple of common commands that are used herein.
+_bc() {
+	bspc config "$@"
+}
+
+_check() {
+	command -v "$1" > /dev/null
+}
+
+###Fix cursor
+xsetroot -cursor_name left_ptr &
+
+#### start the simple x hotkey daemon to handle keybindings
+sxhkd -c $HOME/.config/sxhkd/sxhkdrc &
+sxhkd -c $HOME/.config/sxhkd/common-keys &
+
+#load autostart
+bash $HOME/.config/bspwm/autostart
+
+###set gaps and colours
+_bc border_width        "$BSPWM_BORDER"
+_bc window_gap         "$BSPWM_GAP"
+_bc split_ratio         "$BSPWM_SRATIO"
+
+_bc normal_border_color "$BSPWM_NBC"
+_bc focused_border_color "$BSPWM_FBC"
+_bc active_border_color "$BSPWM_ABC"
+_bc presel_feedback_color "$BSPWM_PFC"
+_bc focused_locked_border_color "$BSPWM_LBC"
+_bc active_locked_border_color "$BSPWM_LBC"
+_bc normal_locked_border_color "$BSPWM_LBC"
+_bc focused_sticky_border_color "$BSPWM_SBC"
+_bc active_sticky_border_color "$BSPWM_SBC"
+_bc normal_sticky_border_color "$BSPWM_SBC"
+_bc focused_private_border_color "$BSPWM_SBC"
+_bc active_private_border_color "$BSPWM_SBC"
+_bc normal_private_border_color "$BSPWM_SBC"
+_bc urgent_border_color "$BSPWM_UBC"
+
+###set desktop padding
+_bc top_padding 55
+_bc bottom_padding 10
+_bc right_padding 10
+_bc left_padding 10
+
+_bc single_monocle 		false
+_bc borderless_monocle  true
+_bc gapless_monocle     true
+_bc paddingless_monocle true
+_bc focus_by_distance   true
+_bc remove_disabled_monitors true
+_bc remove_unplugged_monitors true
+
+## mouse rules
+_bc pointer_follows_focus true
+_bc focus_follows_pointer true
+
+_bc automatic_scheme longest_side
+_bc initial_polarity second_child
+
+###set workspaces per monitor
+bspc wm -O DP-0 HDMI-0
+bspc monitor DP-0 -d       
+bspc monitor HDMI-0 -d  1 2 3 4 5 6
+
+###Set desktop layouts
+bspc desktop "" --layout monocle
+bspc desktop "" --layout monocle
+
+# remove all rules first
+bspc bspc rule -a -r *:*
+
+# window rules
+_bc external_rules_command $HOME/.config/bspwm/scripts/bspwm_external_rules
+
+###Scratchpad
+
+if pgrep -af dropdown > /dev/null
+then
+	echo "Scratchpad is running"
+else
+	alacritty --class 'dropdown,dropdown' -t dropdown &
+fi

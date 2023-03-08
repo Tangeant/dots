@@ -1,0 +1,16 @@
+#!/bin/sh
+#Shell variables for bspwm catppuccin
+
+#Colors
+BSPWM_FBC='#f5c2e7'
+BSPWM_NBC='#1e1e2e'
+BSPWM_ABC='#94e2d5'
+BSPWM_PFC='#A3BE8C'
+BSPWM_LBC='#f38ba8'
+BSPWM_SBC='#eba0ac'
+BSPWM_UBC='#f5e0dc'
+
+## Bspwm appearance
+BSPWM_BORDER='2'
+BSPWM_GAP='15'
+BSPWM_SRATIO='0.50'
