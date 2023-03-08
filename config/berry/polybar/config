@@ -36,7 +36,7 @@ include-file = ~/.config/berry/polybar/decor
 monitor = DP-0
 
 ; Use the specified monitor as a fallback if the main one is not found.
-monitor-fallback =
+monitor-fallback = "${ENV:MONITOR}"
 
 ; Require the monitor to be in connected state
 ; XRandR sometimes reports my monitor as being disconnected (when in use)
