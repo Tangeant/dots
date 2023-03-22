@@ -1,0 +1,4 @@
+#!/bin/bash
+
+berryc window_move_absolute 2320 1420
+berryc window_resize_absolute 1420 940
